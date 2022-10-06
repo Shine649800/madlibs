@@ -3,21 +3,29 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.render('index');
+  res.render('index', {
+    color: "#FFFFFF",
+    textColor: "#000000"
+  });
 });
 
 router.post('/story', function(req, res){
   let body = req.body;
   let newStory = getStory(body);
   res.render('story', {
-    newStory: newStory
+    newStory: newStory,
+    color: generateRandomHexCode(),
+    textColor: generateRandomHexCode()
   });
 })
 
 module.exports = router;
 
 function getStory(formData) {
-  if (formData.storyChoice === "1") {
+ if (formData.storyChoice === "4") {
+   formData.storyChoice = getRandomInt(3).toString();
+ }
+    if (formData.storyChoice === "1") {
     return generateStory1(formData);
   } else if (formData.storyChoice === "2") {
     return generateStory2(formData);
@@ -26,6 +34,14 @@ function getStory(formData) {
   } else {
     return "invalid";
   }
+}
+
+function generateRandomHexCode() {
+  let hexCode = "#"
+  while (hexCode.length < 7) {
+    hexCode += (Math.round(Math.random() * 15)).toString(16)
+  }
+  return hexCode
 }
 
 function generateStory1(formData){
@@ -47,3 +63,8 @@ function generateStory2(formData){
 function generateStory3(formData){
   return `Walking down the path the ${formData.adjective1} Dog spots a ${formData.noun1} near a tree. ${formData.adjective2} sneaking up on it, the dog plans to ${formData.verb1} the cat. As the dog approaches, the cat turns around and ${formData.verb2} before running away.`
 }
+
+function getRandomInt(max) {
+  return Math.floor(Math.random() * max);
+}
+
